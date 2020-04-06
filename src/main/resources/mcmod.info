@@ -1,0 +1,16 @@
+[
+{
+  "modid": "disconnect",
+  "name": "Disconnect",
+  "description": "Discord Gateway Connection...Dis-Connect",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["CheeseL0ver"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
