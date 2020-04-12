@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Disconnect.MODID, name = Disconnect.NAME, version = Disconnect.VERSION)
@@ -18,7 +19,6 @@ public class Disconnect
 
     @SidedProxy(clientSide = "io.flygone.disconnect.proxy.ClientProxy", serverSide = "io.flygone.disconnect.proxy.ServerProxy")
     public static CommonProxy proxy;
-
     public static Logger logger;
 
     public Disconnect(){
@@ -40,5 +40,10 @@ public class Disconnect
     @EventHandler
     public void postInit(FMLPostInitializationEvent event){
         proxy.postInit(event);
+    }
+
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event){
+//        event.registerServerCommand(new DiscordCommand());
     }
 }

@@ -6,15 +6,19 @@ import io.flygone.disconnect.gateway.message.ServerMessage;
 import io.flygone.disconnect.handler.ConfigHandler;
 import io.flygone.disconnect.handler.WebsocketServerHandler;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.Level;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static io.flygone.disconnect.Disconnect.logger;
 
 public class Client extends WebSocketClient {
 
@@ -57,7 +61,11 @@ public class Client extends WebSocketClient {
 
             case 7:
                 //Reconnect
-                reconnectClient();
+                try {
+                    reconnectClient();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case 11:
@@ -111,15 +119,13 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        if (code == 1006){
-            reconnectClient();
-        }
-        System.out.println(String.format("On close: %d, %s", code, reason));
+        logger.log(Level.ERROR, String.format("Gateway connection closed: %d, %s", code, reason));
     }
 
     @Override
     public void onError(Exception ex) {
-        System.out.println(String.format("Oops : %s", ex));
+
+        logger.log(Level.ERROR, (String.format("An error occurred : %s", ex)));
     }
 
     public void schedule(ServerMessage serverMessage){
@@ -135,36 +141,23 @@ public class Client extends WebSocketClient {
     }
 
     public void identify(){
+        if (TOKEN.equals(""))
+            return;
         String json = String.format("{\"op\":%d,\"d\":{\"token\":\"%s\",\"properties\":{\"$os\":\"%s\",\"$broswer\":\"%s\",\"$device\":\"%s\"}}}", 2, TOKEN, "linux", "java", "x1");
-        System.out.println(json);
         this.send(json);
         isIdentified = true;
     }
 
     public void sendPulse(int s){
-//        if (!heartbeatAcknowledged && !isScheduled){
-//            String json = String.format("{\"op\":%d,\"d\": %d}", 1, s);
-//            this.closeBlocking();
-//        }
-        String json = String.format("{\"op\":%d,\"d\": %d}", 1, s);
-        System.out.println(String.format("Client message: %s", json));
-//        heartbeatAcknowledged = false;
-        this.send(json);
+            String json = String.format("{\"op\":%d,\"d\": %d}", 1, s);
+            logger.log(Level.DEBUG, (String.format("Client message: %s", json)));
+            this.send(json);
     }
 
-    public void reconnectClient(){
-        try {
-            this.closeBlocking();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //Disconnect manually and reconnect blocking
-        try {
-            this.reconnectBlocking();
-            //send resume payload
-            this.send(String.format("{\"op\":%d,\"d\":{\"token\":\"%s\",\"session_id\":\"%s\",\"seq\":%d}}", 6, TOKEN, sessionID, lastSeqNum));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void reconnectClient() throws URISyntaxException {
+
+        //Remove heartbeat
+        scheduleTaskExecutor.shutdown();
+        this.close();
     }
 }

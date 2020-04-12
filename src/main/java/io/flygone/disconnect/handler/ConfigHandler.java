@@ -11,6 +11,8 @@ public class ConfigHandler {
 
     public static String discordToken = "";
     public static String discordUsername = "";
+    public static String discordChannelId = "";
+    public static String botSecret = "";
 
     public static void readConfig(){
         Configuration cfg = CommonProxy.config;
@@ -32,5 +34,7 @@ public class ConfigHandler {
     private static void initDiscordConfig(Configuration cfg){
         cfg.addCustomCategoryComment(CATEGORY_DISCORD, "Discord configuration");
         discordToken = cfg.getString("token", CATEGORY_DISCORD, discordToken, "Set your Discord bot token here!");
+        discordChannelId = cfg.getString("channel_id", CATEGORY_DISCORD, discordChannelId, "Set your Discord channel_id here!");
+        botSecret = cfg.getString("bot_secret", CATEGORY_DISCORD, botSecret, "Set your Discord bot's secret here!");
     }
 }

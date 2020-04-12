@@ -20,10 +20,4 @@ public class ClientProxy extends CommonProxy {
     public static void registerModels(ModelRegistryEvent event){
 
     }
-
-    @SubscribeEvent
-    public static void guiOpen(GuiOpenEvent event){
-        System.out.println(event);
-        System.out.println("User opened gui");
-    }
 }
