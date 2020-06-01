@@ -10,14 +10,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Disconnect.MODID, name = Disconnect.NAME, version = Disconnect.VERSION)
+@Mod(modid = Disconnect.MODID, name = Disconnect.NAME, version = Disconnect.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*")
 public class Disconnect
 {
     public static final String MODID = "disconnect";
     public static final String NAME = "Disconnect";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.2";
 
-    @SidedProxy(clientSide = "io.flygone.disconnect.proxy.ClientProxy", serverSide = "io.flygone.disconnect.proxy.ServerProxy")
+    @SidedProxy(serverSide = "io.flygone.disconnect.proxy.ServerProxy")
     public static CommonProxy proxy;
     public static Logger logger;
 

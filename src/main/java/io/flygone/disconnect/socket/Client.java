@@ -97,24 +97,24 @@ public class Client extends WebSocketClient {
                 if (serverMessage.t.equals("MESSAGE_CREATE")){
                     //Send message to server chat
                     CreateMessage createdMessage = new Gson().fromJson(message, CreateMessage.class);
-                    System.out.println(String.format("Discord User Message Created: User- %s, Message: %s", createdMessage.d.author.username, createdMessage.d.content));
+//                    System.out.println(String.format("Discord User Message Created: User- %s, Message: %s", createdMessage.d.author.username, createdMessage.d.content));
                     WebsocketServerHandler.sendGlobalMessage(createdMessage);
                 }
                 if (serverMessage.t.equals("MESSAGE_UPDATE")){
                     //Send message to server chat
                     CreateMessage updatedMessage = new Gson().fromJson(message, CreateMessage.class);
-                    System.out.println(String.format("Discord User Message Updated: User- %s, Message: %s", updatedMessage.d.author.username, updatedMessage.d.content));
+//                    System.out.println(String.format("Discord User Message Updated: User- %s, Message: %s", updatedMessage.d.author.username, updatedMessage.d.content));
                 }
                 if (serverMessage.t.equals("READY")){
                     ReadyMessage readyMessage = new Gson().fromJson(message, ReadyMessage.class);
                     sessionID = readyMessage.d.session_id; //Save the sessionID
-                    System.out.println(String.format("Discord Ready Message: SessionID- %s", sessionID));
+//                    System.out.println(String.format("Discord Ready Message: SessionID- %s", sessionID));
                 }
                 break;
 
         }
 
-        System.out.println(String.format("Server message: %s", message));
+//        System.out.println(String.format("Server message: %s", message));
     }
 
     @Override

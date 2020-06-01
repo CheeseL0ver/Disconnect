@@ -2,12 +2,11 @@ package io.flygone.disconnect.proxy;
 
 import io.flygone.disconnect.http.HttpClient;
 import io.flygone.disconnect.socket.Client;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
@@ -45,11 +44,13 @@ public class ServerProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public static void login (EntityJoinWorldEvent event) throws Exception {
-        if (event.getEntity() instanceof EntityPlayer && event.getEntity().isEntityAlive()){
-            httpClient.sendPost(String.format("[%s] joined the server!", event.getEntity().getName()));
+    public static void handleLoginLogout (PlayerEvent event) throws Exception {
+        if (event instanceof PlayerEvent.PlayerLoggedInEvent){
+            httpClient.sendPost(String.format("[%s] joined the server!", event.player.getName()));
         }
-
+        else if (event instanceof PlayerEvent.PlayerLoggedOutEvent){
+            httpClient.sendPost(String.format("[%s] left the server!", event.player.getName()));
+        }
     }
 
     @SubscribeEvent
@@ -66,7 +67,7 @@ public class ServerProxy extends CommonProxy {
     @SubscribeEvent
     public static void checkClient(TickEvent event){
         if (client.isClosed()){
-            logger.log(Level.DEBUG, "The connect is closed. Starting a new client...");
+            logger.log(Level.DEBUG, "The connection is closed. Starting a new client...");
             try {
                 client = new Client(new URI("wss://gateway.discord.gg/v=6&encoding=json"));
                 client.connect();
